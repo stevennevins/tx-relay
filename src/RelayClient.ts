@@ -152,10 +152,10 @@ export class RelayClient {
         ...tx,
         nonce,
         gas: estimatedGas,
-        ...gasParams,
+        ...(gasParams.gasPrice ? { gasPrice: gasParams.gasPrice } : {}),
+        ...(gasParams.maxFeePerGas ? { maxFeePerGas: gasParams.maxFeePerGas, maxPriorityFeePerGas: gasParams.maxPriorityFeePerGas } : {}),
         account: this.config.account,
         chain: this.config.chain,
-        type: 'eip1559',
       } as unknown as SendTransactionParameters
 
       const hash = await this.walletClient.sendTransaction(preparedTx)

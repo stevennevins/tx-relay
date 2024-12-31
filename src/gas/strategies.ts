@@ -12,7 +12,7 @@ export class LegacyGasStrategy implements GasStrategy {
   constructor(
     private client: PublicClient,
     private multiplier: number = 1
-  ) {}
+  ) { }
 
   async getGasParameters(): Promise<RelayResult<GasParameters>> {
     try {
@@ -20,6 +20,8 @@ export class LegacyGasStrategy implements GasStrategy {
       return {
         data: {
           gasPrice: BigInt(Math.ceil(Number(gasPrice) * this.multiplier)),
+          maxFeePerGas: undefined,
+          maxPriorityFeePerGas: undefined,
         },
       }
     } catch (error) {
@@ -97,6 +99,7 @@ export class EIP1559GasStrategy implements GasStrategy {
 
       return {
         data: {
+          gasPrice: undefined,
           maxFeePerGas,
           maxPriorityFeePerGas,
         },
