@@ -8,12 +8,24 @@ import {
   EIP1559Config,
 } from '../types'
 
+/**
+ * A gas strategy for legacy (pre-EIP-1559) transactions
+ * Uses the network's gas price with an optional multiplier
+ */
 export class LegacyGasStrategy implements GasStrategy {
+  /**
+   * @param client - The viem public client to use for gas estimation
+   * @param multiplier - Optional multiplier to apply to the gas price (default: 1)
+   */
   constructor(
     private client: PublicClient,
     private multiplier: number = 1
   ) { }
 
+  /**
+   * Gets the current gas parameters using legacy gas pricing
+   * @returns Gas parameters with only gasPrice set
+   */
   async getGasParameters(): Promise<RelayResult<GasParameters>> {
     try {
       const gasPrice = await this.client.getGasPrice()
@@ -36,9 +48,17 @@ export class LegacyGasStrategy implements GasStrategy {
   }
 }
 
+/**
+ * A gas strategy for EIP-1559 transactions
+ * Estimates maxFeePerGas and maxPriorityFeePerGas based on network conditions
+ */
 export class EIP1559GasStrategy implements GasStrategy {
   private config: Required<EIP1559Config>
 
+  /**
+   * @param client - The viem public client to use for gas estimation
+   * @param config - Optional configuration for fee calculation
+   */
   constructor(
     private client: PublicClient,
     config: EIP1559Config = {}
@@ -54,6 +74,10 @@ export class EIP1559GasStrategy implements GasStrategy {
     }
   }
 
+  /**
+   * Gets the current gas parameters using EIP-1559 gas pricing
+   * @returns Gas parameters with maxFeePerGas and maxPriorityFeePerGas set
+   */
   async getGasParameters(): Promise<RelayResult<GasParameters>> {
     try {
       const [block, feeHistory] = await Promise.all([
@@ -116,6 +140,13 @@ export class EIP1559GasStrategy implements GasStrategy {
   }
 }
 
+/**
+ * Creates an appropriate gas strategy based on the chain and configuration
+ * @param client - The viem public client to use for gas estimation
+ * @param chain - The chain configuration
+ * @param config - Either an EIP1559 configuration object or a number to use as a multiplier for legacy transactions
+ * @returns A gas strategy appropriate for the chain
+ */
 export function createGasStrategy(
   client: PublicClient,
   chain: Chain,

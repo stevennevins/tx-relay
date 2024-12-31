@@ -6,6 +6,12 @@ import {
   Hash,
 } from 'viem'
 
+export type {
+  TransactionRequest,
+  TransactionReceipt,
+  Hash,
+}
+
 export type RelayConfig = {
   rpcUrl: string
   account: Account
