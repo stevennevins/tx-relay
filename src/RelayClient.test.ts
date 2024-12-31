@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { RelayClient } from '../src/RelayClient'
 import { createPublicClient, http, parseEther } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { foundry } from 'viem/chains'
+import { anvil } from 'viem/chains'
 
 describe('RelayClient', () => {
   // Test accounts from Anvil's default accounts
@@ -15,7 +15,7 @@ describe('RelayClient', () => {
     const relay = new RelayClient({
       rpcUrl: 'http://127.0.0.1:8545',
       account,
-      chain: foundry,
+      chain: anvil,
       preflightChecks: {
         checkBalance: true
       }
@@ -23,7 +23,7 @@ describe('RelayClient', () => {
 
     // Create public client to check balances
     const publicClient = createPublicClient({
-      chain: foundry,
+      chain: anvil,
       transport: http('http://127.0.0.1:8545')
     })
 
@@ -50,7 +50,7 @@ describe('RelayClient', () => {
     const relay = new RelayClient({
       rpcUrl: 'http://127.0.0.1:8545',
       account,
-      chain: foundry,
+      chain: anvil,
       preflightChecks: {
         checkBalance: true
       }
